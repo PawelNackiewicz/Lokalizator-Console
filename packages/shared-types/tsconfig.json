@@ -1,0 +1,14 @@
+{
+  "extends": "@lokalizator/tsconfig/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // Emitem zajmuje się tsup (dual ESM/CJS + .d.ts); tsc służy tu tylko
+    // do sprawdzania typów, stąd brak rootDir/outDir.
+    "noEmit": true,
+    // Przebieg .d.ts w tsup uruchamia tsc bez --tsBuildInfoFile,
+    // a ten nie akceptuje --incremental.
+    "incremental": false
+  },
+  "include": ["src/**/*.ts", "tsup.config.ts"]
+}

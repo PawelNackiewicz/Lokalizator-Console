@@ -1,0 +1,11 @@
+{
+  "extends": "@lokalizator/tsconfig/nest.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "drizzle.config.ts", "vitest.config.ts"]
+}

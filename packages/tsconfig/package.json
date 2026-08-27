@@ -1,0 +1,11 @@
+{
+  "name": "@lokalizator/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "files": [
+    "base.json",
+    "nest.json",
+    "vite.json"
+  ]
+}

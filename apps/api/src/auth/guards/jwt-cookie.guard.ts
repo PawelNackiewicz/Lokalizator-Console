@@ -1,0 +1,57 @@
+import {
+  Injectable,
+  UnauthorizedException,
+  type CanActivate,
+  type ExecutionContext,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { jwtPayloadSchema } from '@lokalizator/shared-types';
+
+import type { Env } from '../../config/env.schema';
+import type { AuthenticatedRequest } from '../authenticated-request';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+
+/**
+ * Guard rejestrowany globalnie (APP_GUARD): token czytamy WYŁĄCZNIE z ciasteczka
+ * `httpOnly`, nigdy z nagłówka `Authorization` — front nie ma dostępu do tokena,
+ * więc nie mógłby go tam wstawić.
+ */
+@Injectable()
+export class JwtCookieGuard implements CanActivate {
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService<Env, true>,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean | undefined>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic === true) {
+      return true;
+    }
+
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const token = request.cookies[this.config.get('AUTH_COOKIE_NAME', { infer: true })];
+
+    if (!token) {
+      throw new UnauthorizedException('Brak aktywnej sesji');
+    }
+
+    try {
+      const claims = await this.jwtService.verifyAsync<Record<string, unknown>>(token);
+      // Kształt payloadu weryfikujemy tym samym schematem, którego użyto do podpisu.
+      const payload = jwtPayloadSchema.parse(claims);
+      request.user = { id: payload.sub, username: payload.username };
+      return true;
+    } catch {
+      // Wygasły, podrobiony albo o nieoczekiwanym kształcie — traktujemy tak samo.
+      throw new UnauthorizedException('Sesja wygasła lub jest nieprawidłowa');
+    }
+  }
+}
