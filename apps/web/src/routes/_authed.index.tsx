@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
-/** Korzeń sekcji chronionej nie ma własnej treści — kierujemy na moduł szkół. */
+/** The root of the protected section has no content of its own — redirect to schools. */
 export const Route = createFileRoute('/_authed/')({
   beforeLoad: () => {
     throw redirect({ to: '/schools' });

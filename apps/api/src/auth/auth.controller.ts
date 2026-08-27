@@ -49,8 +49,8 @@ export class AuthController {
   }
 
   /**
-   * Publiczny celowo: wylogowanie ma działać (i czyścić ciasteczko) także wtedy,
-   * gdy token już wygasł. Operacja jest idempotentna.
+   * Public on purpose: logging out must work (and clear the cookie) even once the
+   * token has expired. The operation is idempotent.
    */
   @Public()
   @Post('logout')

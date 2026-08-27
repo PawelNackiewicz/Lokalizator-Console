@@ -14,9 +14,9 @@ import type { AuthenticatedRequest } from '../authenticated-request';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 /**
- * Guard rejestrowany globalnie (APP_GUARD): token czytamy WYŁĄCZNIE z ciasteczka
- * `httpOnly`, nigdy z nagłówka `Authorization` — front nie ma dostępu do tokena,
- * więc nie mógłby go tam wstawić.
+ * Registered globally (APP_GUARD): the token is read ONLY from the `httpOnly`
+ * cookie, never from an `Authorization` header — the web app cannot access the
+ * token, so it could not put it there anyway.
  */
 @Injectable()
 export class JwtCookieGuard implements CanActivate {
@@ -45,12 +45,12 @@ export class JwtCookieGuard implements CanActivate {
 
     try {
       const claims = await this.jwtService.verifyAsync<Record<string, unknown>>(token);
-      // Kształt payloadu weryfikujemy tym samym schematem, którego użyto do podpisu.
+      // The payload shape is checked with the same schema used to sign it.
       const payload = jwtPayloadSchema.parse(claims);
       request.user = { id: payload.sub, username: payload.username };
       return true;
     } catch {
-      // Wygasły, podrobiony albo o nieoczekiwanym kształcie — traktujemy tak samo.
+      // Expired, forged or unexpectedly shaped — all treated the same.
       throw new UnauthorizedException('Sesja wygasła lub jest nieprawidłowa');
     }
   }

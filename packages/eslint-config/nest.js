@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import { baseConfig } from './base.js';
 
 /**
- * Konfiguracja dla aplikacji NestJS (apps/api).
+ * Config for the NestJS app (apps/api).
  *
  * @type {import('typescript-eslint').ConfigArray}
  */
@@ -15,13 +15,13 @@ export const nestConfig = tseslint.config(...baseConfig, {
     sourceType: 'commonjs',
   },
   rules: {
-    // Dekoratory Nest (@Injectable, @Controller) same w sobie nie niosą typów,
-    // a metadane parametrów bywają widziane jako "unsafe" — te reguły generują
-    // wtedy szum bez realnej wartości.
+    // Nest decorators (@Injectable, @Controller) carry no types of their own and
+    // parameter metadata is often seen as "unsafe", so these rules produce noise
+    // without real value here.
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    // Skrypty CLI (migrate/seed) muszą raportować postęp na stdout.
+    // CLI scripts (migrate/seed) have to report progress on stdout.
     'no-console': 'off',
   },
 });

@@ -2,11 +2,11 @@ import { BadRequestException, Injectable, type PipeTransform } from '@nestjs/com
 import { z, type ZodType } from 'zod';
 
 /**
- * Waliduje wejście dowolnym schematem zod i zwraca sparsowaną (przetransformowaną)
- * wartość, więc handler dostaje już dane w docelowym typie.
+ * Validates input with any zod schema and returns the parsed (transformed) value,
+ * so the handler receives data already in its target type.
  *
- * Używamy zod zamiast class-validatora, bo te same schematy współdzielimy
- * z frontendem przez `@lokalizator/shared-types` — jeden kontrakt, zero duplikacji.
+ * zod rather than class-validator, because the same schemas are shared with the
+ * web app through `@lokalizator/shared-types` — one contract, no duplication.
  */
 @Injectable()
 export class ZodValidationPipe<TOutput> implements PipeTransform<unknown, TOutput> {

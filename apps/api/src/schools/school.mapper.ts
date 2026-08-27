@@ -3,12 +3,12 @@ import type { School } from '@lokalizator/shared-types';
 import type { SchoolRow } from '../db/schema';
 
 /**
- * Wiersz z bazy -> kontrakt API.
+ * Database row -> API contract.
  *
- * Dwie konwersje, które muszą się tu wydarzyć:
- *  - `numeric` przychodzi ze sterownika jako string (Postgres nie gwarantuje,
- *    że zmieści się w double), a kontrakt API deklaruje number,
- *  - `timestamptz` przychodzi jako Date, a JSON nie ma typu daty -> ISO-8601.
+ * Two conversions have to happen here:
+ *  - `numeric` arrives from the driver as a string (Postgres does not guarantee
+ *    it fits in a double), while the API contract declares a number,
+ *  - `timestamptz` arrives as a Date, and JSON has no date type -> ISO-8601.
  */
 export function toSchoolDto(row: SchoolRow): School {
   return {

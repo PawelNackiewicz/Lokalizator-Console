@@ -5,11 +5,11 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { SchoolsService } from './schools.service';
 
 /**
- * Chroniony przez globalny `JwtCookieGuard` — brak dekoratora `@Public()`
- * oznacza, że każdy endpoint wymaga ważnego ciasteczka sesyjnego.
+ * Protected by the global `JwtCookieGuard` — the absence of `@Public()` means
+ * every endpoint requires a valid session cookie.
  *
- * MVP wystawia tylko odczyt. Miejsce na POST/PATCH/DELETE jest przygotowane
- * (serwis + mapper), ale endpointy świadomie nie powstały — patrz README.
+ * The MVP exposes reads only. Room for POST/PATCH/DELETE is prepared (service +
+ * mapper), but those endpoints were deliberately left out — see README.
  */
 @Controller('schools')
 export class SchoolsController {

@@ -9,15 +9,15 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 
 import { SchoolRating } from './school-rating';
 
-// Leaflet domyślnie składa ścieżki do ikon względem CSS-a, co nie działa po
-// zbundlowaniu. Podajemy je jawnie jako assety Vite.
+// By default Leaflet resolves icon paths relative to its CSS, which breaks once
+// bundled. Pass them explicitly as Vite assets instead.
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
 
-/** Środek Polski + zoom obejmujący cały kraj — dane startowe są rozrzucone po PL. */
+/** Centre of Poland + a zoom covering the whole country — the seed data is spread across PL. */
 const POLAND_CENTER: L.LatLngExpression = [52.0, 19.3];
 const POLAND_ZOOM = 6;
 const SELECTED_ZOOM = 13;
@@ -29,8 +29,8 @@ interface SchoolsMapProps {
 }
 
 /**
- * Mapa Leaflet żyje poza drzewem Reacta, więc reakcję na zmianę zaznaczenia
- * realizujemy imperatywnie: przelot kamery + otwarcie popupu właściwego markera.
+ * The Leaflet map lives outside the React tree, so reacting to a selection change
+ * is imperative: fly the camera there and open that marker's popup.
  */
 function SelectionController({
   selected,
@@ -59,8 +59,7 @@ export function SchoolsMap({ schools, selected, onSelect }: SchoolsMapProps) {
   return (
     <MapContainer center={POLAND_CENTER} zoom={POLAND_ZOOM} scrollWheelZoom className="h-full">
       <TileLayer
-        // OpenStreetMap nie wymaga klucza API. Atrybucja jest obowiązkowa
-        // zgodnie z licencją ODbL.
+        // OpenStreetMap needs no API key. Attribution is mandatory under the ODbL.
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         maxZoom={19}

@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* Tailwind v4 nie ma tailwind.config.js — motyw shadcn/ui (base color: slate)
-   żyje w całości tutaj, jako zmienne CSS. */
+/* Tailwind v4 has no tailwind.config.js — the shadcn/ui theme (base color: slate)
+   lives entirely here, as CSS variables. */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -84,8 +84,8 @@
   }
 }
 
-/* Leaflet renderuje własne kontrolki poza drzewem Reacta — wyrównujemy je
-   do promienia zaokrągleń używanego przez shadcn/ui. */
+/* Leaflet renders its own controls outside the React tree — aligned here to the
+   corner radius shadcn/ui uses. */
 @layer components {
   .leaflet-container {
     @apply h-full w-full rounded-lg;

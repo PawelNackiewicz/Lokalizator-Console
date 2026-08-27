@@ -12,17 +12,17 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const config = app.get<ConfigService<Env, true>>(ConfigService);
 
-  // Guard czyta token z ciasteczka, więc parser musi być przed routingiem.
+  // The guard reads the token from the cookie, so the parser must run before routing.
   app.use(cookieParser());
 
-  // CORS z credentials wymaga dokładnego origin — wildcard jest odrzucany
-  // przez przeglądarkę, gdy `credentials: true`.
+  // CORS with credentials requires an exact origin — browsers reject a wildcard
+  // when `credentials: true`.
   app.enableCors({
     origin: config.get('WEB_ORIGIN', { infer: true }),
     credentials: true,
   });
 
-  // Pozwala zamknąć pulę połączeń Postgresa przy SIGTERM/SIGINT.
+  // Lets the Postgres connection pool close on SIGTERM/SIGINT.
   app.enableShutdownHooks();
 
   const port = config.get('API_PORT', { infer: true });

@@ -8,8 +8,8 @@ import { DRIZZLE, PG_CLIENT } from './db.tokens';
 import * as schema from './schema';
 
 /**
- * Pojedyncza pula połączeń na proces. Moduł jest globalny, żeby feature'y
- * (`users`, `schools`) mogły wstrzyknąć `DRIZZLE` bez importowania go za każdym razem.
+ * One connection pool per process. The module is global so feature modules
+ * (`users`, `schools`) can inject `DRIZZLE` without importing it every time.
  */
 @Global()
 @Module({

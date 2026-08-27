@@ -10,9 +10,9 @@ type Unit = keyof typeof UNIT_TO_MS;
 const DURATION_PATTERN = /^(\d+)([smhd])$/;
 
 /**
- * Zamienia czas w formacie `8h` / `30m` / `7d` na milisekundy.
- * Ten sam string podajemy do JWT (`expiresIn`) i do ciasteczka (`maxAge`),
- * żeby sesja i token wygasały dokładnie w tym samym momencie.
+ * Converts a `8h` / `30m` / `7d` duration into milliseconds. The same string feeds
+ * both the JWT (`expiresIn`) and the cookie (`maxAge`), so the session and the
+ * token expire at exactly the same moment.
  */
 export function durationToMs(duration: string): number {
   const match = DURATION_PATTERN.exec(duration);

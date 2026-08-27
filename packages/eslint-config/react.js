@@ -6,11 +6,11 @@ import tseslint from 'typescript-eslint';
 import { baseConfig } from './base.js';
 
 /**
- * Konfiguracja dla aplikacji React + Vite (apps/web).
+ * Config for the React + Vite app (apps/web).
  *
- * `configs.flat['recommended-latest']` to wariant flat-config wtyczki
- * react-hooks — klucz `configs['recommended-latest']` jest w formacie eslintrc
- * i ESLint 9 go odrzuca.
+ * `configs.flat['recommended-latest']` is the flat-config variant of the
+ * react-hooks plugin — the `configs['recommended-latest']` key is in eslintrc
+ * format and ESLint 9 rejects it.
  *
  * @type {import('typescript-eslint').ConfigArray}
  */

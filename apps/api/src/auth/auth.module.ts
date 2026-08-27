@@ -23,8 +23,8 @@ import { JwtCookieGuard } from './guards/jwt-cookie.guard';
   controllers: [AuthController],
   providers: [
     AuthService,
-    // Zarejestrowany globalnie: domyślnie chronione jest wszystko,
-    // a wyjątki oznaczamy dekoratorem @Public().
+    // Registered globally: everything is protected by default and exceptions are
+    // opted out with the @Public() decorator.
     { provide: APP_GUARD, useClass: JwtCookieGuard },
   ],
 })

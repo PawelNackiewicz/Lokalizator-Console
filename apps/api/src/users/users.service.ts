@@ -8,7 +8,7 @@ import { users, type UserRow } from '../db/schema';
 export class UsersService {
   constructor(@Inject(DRIZZLE) private readonly db: Database) {}
 
-  /** Zwraca pełny wiersz (z hashem hasła) — używane wyłącznie przez AuthService. */
+  /** Returns the full row, password hash included — used only by AuthService. */
   findByUsername(username: string): Promise<UserRow | undefined> {
     return this.db.query.users.findFirst({ where: eq(users.username, username) });
   }

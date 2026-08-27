@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
-/** Błędy zwracane przez API w ustalonym kształcie (Nest + ZodValidationPipe). */
+/** Errors returned by the API in its agreed shape (Nest + ZodValidationPipe). */
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -11,7 +11,7 @@ export class ApiError extends Error {
     this.name = 'ApiError';
   }
 
-  /** Brak sesji lub token wygasł — sygnał do przekierowania na /login. */
+  /** No session or an expired token — the cue to redirect to /login. */
   get isUnauthorized(): boolean {
     return this.status === 401;
   }
@@ -45,11 +45,11 @@ function readFieldErrors(body: unknown): Record<string, string[]> | undefined {
 }
 
 /**
- * Cienki wrapper nad fetch.
+ * Thin wrapper over fetch.
  *
- * `credentials: 'include'` jest kluczowe: token siedzi w ciasteczku httpOnly,
- * którego JS nie widzi, więc przeglądarka musi je dołączyć sama. Wymaga to
- * po stronie API `cors({ credentials: true, origin: <dokładny origin> })`.
+ * `credentials: 'include'` is the crucial part: the token lives in an httpOnly
+ * cookie that JS cannot see, so the browser has to attach it itself. That in turn
+ * requires `cors({ credentials: true, origin: <exact origin> })` on the API side.
  */
 export async function apiFetch<TResponse>(
   path: string,

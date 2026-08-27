@@ -4,9 +4,9 @@ export const RATING_MIN = 1;
 export const RATING_MAX = 5;
 
 /**
- * Szkoła w postaci, w jakiej wychodzi z API (JSON).
- * `rating` jest liczbą z jednym miejscem po przecinku (w bazie numeric(2,1)),
- * `createdAt` jest stringiem ISO-8601 — JSON nie ma typu daty.
+ * A school in the shape the API returns it (JSON).
+ * `rating` is a number with one decimal place (numeric(2,1) in the database),
+ * `createdAt` is an ISO-8601 string — JSON has no date type.
  */
 export const schoolSchema = z.object({
   id: z.uuid(),
@@ -22,7 +22,7 @@ export type School = z.infer<typeof schoolSchema>;
 
 export const schoolListSchema = z.array(schoolSchema);
 
-/** Walidacja parametru ścieżki `GET /schools/:id`. */
+/** Validation of the `GET /schools/:id` path parameter. */
 export const schoolIdParamSchema = z.object({
   id: z.uuid('Nieprawidłowy identyfikator szkoły'),
 });

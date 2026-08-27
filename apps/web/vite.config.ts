@@ -5,19 +5,18 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 
-/** Cały monorepo dzieli jeden .env w rootcie repo. */
+/** The whole monorepo shares one .env at the repo root. */
 const envDir = fileURLToPath(new URL('../..', import.meta.url));
 
 export default defineConfig(({ mode }) => {
-  // Trzeci argument '' = wczytaj wszystkie zmienne, nie tylko VITE_*.
-  // Potrzebujemy WEB_PORT do konfiguracji dev servera; do bundla i tak trafią
-  // wyłącznie zmienne z prefiksem VITE_.
+  // Third argument '' = load every variable, not just VITE_*. WEB_PORT is needed
+  // to configure the dev server; only VITE_-prefixed ones reach the bundle.
   const env = loadEnv(mode, envDir, '');
 
   return {
     envDir,
     plugins: [
-      // Musi być PRZED pluginem React — generuje routeTree.gen.ts z src/routes/.
+      // Must come BEFORE the React plugin — it generates routeTree.gen.ts from src/routes/.
       tanstackRouter({ target: 'react', autoCodeSplitting: true }),
       react(),
       tailwindcss(),
@@ -29,7 +28,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: Number(env.WEB_PORT ?? 5173),
-      // Bez tego Vite po cichu wybrałby inny port, a CORS/WEB_ORIGIN by się rozjechał.
+      // Without this Vite would silently pick another port and CORS/WEB_ORIGIN would drift.
       strictPort: true,
     },
     build: {
@@ -37,8 +36,8 @@ export default defineConfig(({ mode }) => {
       sourcemap: true,
       rollupOptions: {
         output: {
-          // Zależności zmieniają się rzadziej niż kod aplikacji — własne chunki
-          // pozwalają przeglądarce zachować je w cache między wdrożeniami.
+          // Dependencies change less often than app code — separate chunks let the
+          // browser keep them cached across deployments.
           manualChunks: {
             tanstack: ['@tanstack/react-router', '@tanstack/react-query'],
             leaflet: ['leaflet', 'react-leaflet'],

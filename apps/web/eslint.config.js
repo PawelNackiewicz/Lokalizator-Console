@@ -6,11 +6,11 @@ export default [
   {
     files: ['src/routes/**/*.tsx'],
     rules: {
-      // Pliki tras eksportują `Route` obok komponentu — to wymagany kształt
-      // API TanStack Routera, nie błąd Fast Refresh.
+      // Route files export `Route` next to the component — that is the shape the
+      // TanStack Router API requires, not a Fast Refresh mistake.
       'react-refresh/only-export-components': 'off',
-      // `throw redirect(...)` to mechanizm przerywania nawigacji w TanStack
-      // Routerze; zwracany obiekt dziedziczy po `Response`, nie po `Error`.
+      // `throw redirect(...)` is how TanStack Router aborts navigation; the object
+      // it returns extends `Response`, not `Error`.
       '@typescript-eslint/only-throw-error': [
         'error',
         {
@@ -20,8 +20,8 @@ export default [
     },
   },
   {
-    // Komponenty skopiowane z shadcn/ui celowo eksportują warianty cva
-    // obok samego komponentu — nie modyfikujemy ich kształtu.
+    // Components copied from shadcn/ui intentionally export cva variants next to
+    // the component itself — their shape is kept as-is.
     files: ['src/components/ui/**/*.tsx'],
     rules: { 'react-refresh/only-export-components': 'off' },
   },
