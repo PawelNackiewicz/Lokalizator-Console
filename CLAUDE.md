@@ -33,4 +33,12 @@ No section-divider banners (`// --- Users ---`), no commented-out code, no chang
 "added by" notes — git covers that.
 
 User-facing strings (validation messages, UI copy, seed data) stay Polish. Only comments
-are English.
+and API documentation are English.
+
+## API documentation (Swagger/OpenAPI)
+
+**English only**, same rule as comments: `DocumentBuilder().setTitle()/.setDescription()`,
+`@ApiOperation` summaries, `@ApiResponse`/`@ApiParam`/`@ApiBody` descriptions, and every
+`example` value inside a schema are developer-facing docs, not runtime output — write them
+in English even though the API's actual responses stay Polish. An `example` illustrates the
+shape of a field, it does not need to match the literal string the API returns.

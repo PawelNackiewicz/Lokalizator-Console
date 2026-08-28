@@ -1,6 +1,17 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCookieAuth,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {
+  authUserResponseSchema,
   loginInputSchema,
   type AuthUser,
   type AuthUserResponse,
@@ -8,6 +19,8 @@ import {
 } from '@lokalizator/shared-types';
 import type { Response } from 'express';
 
+import { unauthorizedErrorSchema, validationErrorSchema } from '../common/swagger/error-schemas';
+import { zodSchema } from '../common/swagger/zod-schema';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import type { Env } from '../config/env.schema';
 import { AuthService } from './auth.service';
@@ -15,6 +28,7 @@ import { buildAuthCookieOptions, buildAuthCookieSetOptions } from './cookie';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -29,6 +43,10 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logs the user in and sets the session httpOnly cookie' })
+  @ApiBody({ schema: zodSchema(loginInputSchema) })
+  @ApiOkResponse({ schema: zodSchema(authUserResponseSchema) })
+  @ApiBadRequestResponse({ schema: validationErrorSchema })
   async login(
     @Body(new ZodValidationPipe(loginInputSchema)) credentials: LoginInput,
     @Res({ passthrough: true }) response: Response,
@@ -55,6 +73,8 @@ export class AuthController {
   @Public()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Clears the session cookie — idempotent, works without a session too' })
+  @ApiNoContentResponse()
   logout(@Res({ passthrough: true }) response: Response): void {
     response.clearCookie(
       this.cookieName,
@@ -63,6 +83,10 @@ export class AuthController {
   }
 
   @Get('me')
+  @ApiOperation({ summary: 'Returns the currently logged-in user' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ schema: zodSchema(authUserResponseSchema) })
+  @ApiUnauthorizedResponse({ schema: unauthorizedErrorSchema })
   me(@CurrentUser() user: AuthUser): AuthUserResponse {
     return { user };
   }
