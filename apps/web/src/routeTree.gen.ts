@@ -13,6 +13,8 @@ import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedIndexRouteImport } from './routes/_authed.index'
 import { Route as AuthedSchoolsRouteImport } from './routes/_authed.schools'
+import { Route as AuthedSchoolsImportRouteImport } from './routes/_authed.schools_.import'
+import { Route as AuthedSchoolsImportCsvRouteImport } from './routes/_authed.schools_.import_.csv'
 
 const AuthedRoute = AuthedRouteImport.update({
   id: '/_authed',
@@ -33,16 +35,30 @@ const AuthedSchoolsRoute = AuthedSchoolsRouteImport.update({
   path: '/schools',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedSchoolsImportRoute = AuthedSchoolsImportRouteImport.update({
+  id: '/schools_/import',
+  path: '/schools/import',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedSchoolsImportCsvRoute = AuthedSchoolsImportCsvRouteImport.update({
+  id: '/schools_/import_/csv',
+  path: '/schools/import/csv',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthedIndexRoute
   '/login': typeof LoginRoute
   '/schools': typeof AuthedSchoolsRoute
+  '/schools/import': typeof AuthedSchoolsImportRoute
+  '/schools/import/csv': typeof AuthedSchoolsImportCsvRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/schools': typeof AuthedSchoolsRoute
   '/': typeof AuthedIndexRoute
+  '/schools/import': typeof AuthedSchoolsImportRoute
+  '/schools/import/csv': typeof AuthedSchoolsImportCsvRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -50,13 +66,23 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authed/schools': typeof AuthedSchoolsRoute
   '/_authed/': typeof AuthedIndexRoute
+  '/_authed/schools_/import': typeof AuthedSchoolsImportRoute
+  '/_authed/schools_/import_/csv': typeof AuthedSchoolsImportCsvRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/schools'
+  fullPaths:
+    '/' | '/login' | '/schools' | '/schools/import' | '/schools/import/csv'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/schools' | '/'
-  id: '__root__' | '/_authed' | '/login' | '/_authed/schools' | '/_authed/'
+  to: '/login' | '/schools' | '/' | '/schools/import' | '/schools/import/csv'
+  id:
+    | '__root__'
+    | '/_authed'
+    | '/login'
+    | '/_authed/schools'
+    | '/_authed/'
+    | '/_authed/schools_/import'
+    | '/_authed/schools_/import_/csv'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,17 +120,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedSchoolsRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/schools_/import': {
+      id: '/_authed/schools_/import'
+      path: '/schools/import'
+      fullPath: '/schools/import'
+      preLoaderRoute: typeof AuthedSchoolsImportRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/schools_/import_/csv': {
+      id: '/_authed/schools_/import_/csv'
+      path: '/schools/import/csv'
+      fullPath: '/schools/import/csv'
+      preLoaderRoute: typeof AuthedSchoolsImportCsvRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
 interface AuthedRouteChildren {
   AuthedSchoolsRoute: typeof AuthedSchoolsRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedSchoolsImportRoute: typeof AuthedSchoolsImportRoute
+  AuthedSchoolsImportCsvRoute: typeof AuthedSchoolsImportCsvRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedSchoolsRoute: AuthedSchoolsRoute,
   AuthedIndexRoute: AuthedIndexRoute,
+  AuthedSchoolsImportRoute: AuthedSchoolsImportRoute,
+  AuthedSchoolsImportCsvRoute: AuthedSchoolsImportCsvRoute,
 }
 
 const AuthedRouteWithChildren =

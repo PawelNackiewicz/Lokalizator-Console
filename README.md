@@ -146,8 +146,10 @@ src/routes/
 ├── __root.tsx           layout główny + typ kontekstu (queryClient) + 404
 ├── login.tsx            /login — publiczny
 ├── _authed.tsx          trasa bezścieżkowa: GUARD + nagłówek z nawigacją i wylogowaniem
-├── _authed.index.tsx    / → redirect na /schools
-└── _authed.schools.tsx  /schools — lista + mapa
+├── _authed.index.tsx              / → redirect na /schools
+├── _authed.schools.tsx            /schools — panel z zakładkami lista/mapa
+├── _authed.schools_.import.tsx    /schools/import — wybór: ręcznie (TODO) / CSV
+└── _authed.schools_.import_.csv.tsx  /schools/import/csv — import z pliku CSV
 ```
 
 Podział na publiczne/chronione realizuje **trasa bezścieżkowa `_authed`**: jej

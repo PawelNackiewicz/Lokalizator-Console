@@ -4,7 +4,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 
 import { SchoolRating } from './school-rating';
@@ -26,6 +26,26 @@ interface SchoolsMapProps {
   schools: School[];
   selected: School | null;
   onSelect: (school: School) => void;
+  /** Whether this map is the currently visible tab. */
+  active: boolean;
+}
+
+/**
+ * The map mounts while its tab is hidden (`display: none`), so Leaflet measures a
+ * 0×0 container. Re-measure once the tab becomes visible, or the map stays blank and
+ * `SelectionController`'s `flyTo` throws on the stale size. A layout effect (it runs
+ * before `SelectionController`'s plain effect, tab order or not) re-measures in time.
+ */
+function InvalidateSizeOnShow({ active }: { active: boolean }) {
+  const map = useMap();
+
+  useLayoutEffect(() => {
+    if (active) {
+      map.invalidateSize();
+    }
+  }, [active, map]);
+
+  return null;
 }
 
 /**
@@ -34,26 +54,30 @@ interface SchoolsMapProps {
  */
 function SelectionController({
   selected,
+  active,
   markers,
 }: {
   selected: School | null;
+  active: boolean;
   markers: React.RefObject<Map<string, L.Marker>>;
 }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!selected) {
+    // A hidden tab keeps the map at 0×0, and `flyTo` there throws "Invalid LatLng
+    // (NaN, NaN)" — skip it until `active` flips true, which re-fires this effect.
+    if (!selected || !active) {
       return;
     }
 
     map.flyTo([selected.latitude, selected.longitude], SELECTED_ZOOM, { duration: 0.8 });
     markers.current.get(selected.id)?.openPopup();
-  }, [map, markers, selected]);
+  }, [map, markers, selected, active]);
 
   return null;
 }
 
-export function SchoolsMap({ schools, selected, onSelect }: SchoolsMapProps) {
+export function SchoolsMap({ schools, selected, onSelect, active }: SchoolsMapProps) {
   const markers = useRef<Map<string, L.Marker>>(new Map());
 
   return (
@@ -65,7 +89,8 @@ export function SchoolsMap({ schools, selected, onSelect }: SchoolsMapProps) {
         maxZoom={19}
       />
 
-      <SelectionController selected={selected} markers={markers} />
+      <InvalidateSizeOnShow active={active} />
+      <SelectionController selected={selected} active={active} markers={markers} />
 
       {schools.map((school) => (
         <Marker
