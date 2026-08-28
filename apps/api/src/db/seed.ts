@@ -9,14 +9,15 @@ import { SEED_SCHOOLS } from './seed-data/schools';
 import * as schema from './schema';
 import { schools, users } from './schema';
 
-// Skrypt uruchamiany jest z apps/api, a .env leży w rootcie repo.
+// The script runs from apps/api, but .env lives at the repo root.
 config({ path: ['../../.env', '.env'], quiet: true });
 
 const BCRYPT_ROUNDS = 12;
 
 /**
- * Seed ma własny schemat ENV — dane admina są potrzebne wyłącznie tutaj
- * i celowo NIE są częścią konfiguracji aplikacji (nie chcemy hasła w runtime API).
+ * The seed has its own env schema — the admin credentials are needed here only
+ * and are deliberately NOT part of the app config, so the password never lives
+ * in the API runtime.
  */
 const seedEnvSchema = z.object({
   DATABASE_URL: z.url('DATABASE_URL musi być poprawnym URL-em'),
@@ -26,14 +27,13 @@ const seedEnvSchema = z.object({
 
 async function main(): Promise<void> {
   const env = seedEnvSchema.parse(process.env);
-  // `--reset` czyści tabelę szkół przed wstawieniem — przydatne przy zmianie danych startowych.
+  // `--reset` clears the schools table before inserting — handy when the starter data changes.
   const reset = process.argv.includes('--reset');
 
   const client = postgres(env.DATABASE_URL, { max: 1 });
   const db = drizzle(client, { schema });
 
   try {
-    // --- Użytkownik administracyjny ------------------------------------------
     const passwordHash = await hash(env.SEED_ADMIN_PASSWORD, BCRYPT_ROUNDS);
 
     await db
@@ -43,7 +43,6 @@ async function main(): Promise<void> {
 
     console.log(`✔ Użytkownik "${env.SEED_ADMIN_USER}" gotowy (hasło z SEED_ADMIN_PASSWORD).`);
 
-    // --- Szkoły ---------------------------------------------------------------
     if (reset) {
       await db.delete(schools);
       console.log('… wyczyszczono tabelę schools (--reset).');

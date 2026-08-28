@@ -8,11 +8,11 @@ export const authKeys = {
 };
 
 /**
- * Jedyne źródło prawdy o stanie zalogowania. Token jest httpOnly, więc front
- * nie może go odczytać — zamiast tego pyta API, kim jest.
+ * Single source of truth for the signed-in state. The token is httpOnly, so the
+ * web app cannot read it — it asks the API who it is instead.
  *
- * `retry: false`, bo 401 to poprawna odpowiedź (użytkownik niezalogowany),
- * a nie błąd sieci wart ponawiania.
+ * `retry: false`, because a 401 is a valid answer (nobody is signed in), not a
+ * network error worth retrying.
  */
 export const meQueryOptions = queryOptions({
   queryKey: authKeys.me,
@@ -22,9 +22,8 @@ export const meQueryOptions = queryOptions({
 });
 
 /**
- * Używane w `beforeLoad` tras. Zwraca użytkownika albo `null` przy 401.
- * Każdy inny błąd (np. API nie odpowiada) leci dalej — nie chcemy udawać,
- * że użytkownik jest wylogowany, gdy tak naprawdę padła sieć.
+ * Used in route `beforeLoad`. Returns the user, or `null` on a 401. Any other
+ * error propagates — a network failure must not be mistaken for a signed-out user.
  */
 export async function fetchCurrentUser(queryClient: QueryClient): Promise<AuthUser | null> {
   try {
@@ -48,7 +47,7 @@ export function useLoginMutation() {
         body: JSON.stringify(credentials),
       }),
     onSuccess: (data) => {
-      // Nadpisujemy cache od razu, żeby guard trasy nie musiał robić rundy do API.
+      // Prime the cache right away so the route guard skips a round trip to the API.
       queryClient.setQueryData(authKeys.me, data);
     },
   });
@@ -59,8 +58,8 @@ export function useLogoutMutation() {
 
   return useMutation({
     mutationFn: () => apiFetch<void>('/auth/logout', { method: 'POST' }),
-    // `onSettled`, bo lokalny stan czyścimy nawet gdy żądanie padnie —
-    // ciasteczko i tak jest już nieużyteczne z punktu widzenia użytkownika.
+    // `onSettled`: local state is cleared even if the request fails — from the
+    // user's point of view the cookie is already useless.
     onSettled: () => {
       queryClient.clear();
     },

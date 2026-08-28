@@ -3,9 +3,9 @@ import prettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 /**
- * Wspólna baza dla całego monorepo: reguły JS/TS + wyłączenie reguł
- * kolidujących z Prettierem. Linting jest type-aware (`projectService`),
- * więc każdy pakiet musi mieć poprawny tsconfig.json w swoim rootcie.
+ * Shared base for the whole monorepo: JS/TS rules plus the ones that clash with
+ * Prettier turned off. Linting is type-aware (`projectService`), so every package
+ * needs a valid tsconfig.json at its root.
  *
  * @type {import('typescript-eslint').ConfigArray}
  */
@@ -41,7 +41,7 @@ export const baseConfig = tseslint.config(
     },
   },
   {
-    // Pliki konfiguracyjne żyją poza `tsconfig.json` aplikacji.
+    // Config files live outside the app's `tsconfig.json`.
     files: ['**/*.config.{js,mjs,cjs}', '**/eslint.config.js'],
     extends: [tseslint.configs.disableTypeChecked],
     rules: { 'no-console': 'off' },

@@ -11,9 +11,9 @@ export class SchoolsService {
   constructor(@Inject(DRIZZLE) private readonly db: Database) {}
 
   /**
-   * MVP zwraca pełną listę bez paginacji — przy kilkunastu rekordach to
-   * najprostsze rozwiązanie, a mapa i tak potrzebuje wszystkich pinezek naraz.
-   * Paginacja/filtrowanie: patrz TODO w README.
+   * The MVP returns the whole list unpaginated — with a dozen or so rows that is
+   * the simplest option, and the map needs every pin at once anyway.
+   * Pagination/filtering: see the TODO in README.
    */
   async findAll(): Promise<School[]> {
     const rows = await this.db.select().from(schools).orderBy(asc(schools.name));

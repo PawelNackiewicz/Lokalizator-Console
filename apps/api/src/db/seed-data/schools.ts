@@ -1,12 +1,12 @@
 import type { NewSchoolRow } from '../schema';
 
 /**
- * Przykładowe dane startowe: 15 szkół rozrzuconych po Polsce.
+ * Starter data: 15 schools spread across Poland.
  *
- * Nazwy i adresy są realistyczne (odpowiadają istniejącym placówkom),
- * współrzędne są przybliżone — wystarczające, by pinezka trafiła we właściwą
- * ulicę. `rating` jest w całości fikcyjny: w MVP nie mamy źródła ocen,
- * patrz sekcja TODO w README.
+ * Names and addresses are realistic (they match existing institutions) and the
+ * coordinates are approximate — accurate enough to drop the pin on the right
+ * street. `rating` is entirely made up: the MVP has no source of ratings, see
+ * the TODO section in README.
  */
 export const SEED_SCHOOLS: NewSchoolRow[] = [
   {

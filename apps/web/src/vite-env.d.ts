@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  /** Bazowy adres API. Ustawiany w .env w rootcie repo. */
+  /** API base URL. Set in the .env at the repo root. */
   readonly VITE_API_URL?: string;
 }
 

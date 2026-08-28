@@ -3,13 +3,13 @@ import type { AuthUser } from '@lokalizator/shared-types';
 
 import type { AuthenticatedRequest } from '../authenticated-request';
 
-/** Wstrzykuje użytkownika ustawionego przez `JwtCookieGuard`. */
+/** Injects the user set by `JwtCookieGuard`. */
 export const CurrentUser = createParamDecorator(
   (_data: unknown, context: ExecutionContext): AuthUser => {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
     if (!request.user) {
-      // Nie powinno się zdarzyć: guard biegnie przed dekoratorem parametru.
+      // Should not happen: the guard runs before the param decorator.
       throw new UnauthorizedException('Brak aktywnej sesji');
     }
 

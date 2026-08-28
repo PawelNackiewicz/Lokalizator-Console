@@ -4,17 +4,17 @@ import { durationToMs } from '../config/duration';
 import type { Env } from '../config/env.schema';
 
 /**
- * Wspólne atrybuty ciasteczka sesyjnego.
+ * Shared attributes of the session cookie.
  *
- * - `httpOnly`  — token jest niedostępny dla JS, więc XSS go nie wykradnie.
- * - `secure`    — tylko HTTPS; w dev wyłączone, bo localhost chodzi po http.
- * - `sameSite: 'lax'` — front (`:5173`) i API (`:3000`) to ten sam site
- *   (SameSite patrzy na domenę rejestrowalną, nie na port), więc `lax` wystarcza
- *   i jednocześnie blokuje CSRF przy żądaniach cross-site typu POST.
- *   `strict` zerwałoby powrót do aplikacji z zewnętrznego linku.
+ * - `httpOnly` — the token is out of reach of JS, so XSS cannot steal it.
+ * - `secure` — HTTPS only; off in dev because localhost runs over http.
+ * - `sameSite: 'lax'` — the web app (`:5173`) and the API (`:3000`) are the same
+ *   site (SameSite looks at the registrable domain, not the port), so `lax` is
+ *   enough and still blocks CSRF on cross-site POSTs. `strict` would break
+ *   returning to the app from an external link.
  *
- * UWAGA: `clearCookie` usunie ciasteczko tylko wtedy, gdy dostanie te same
- * atrybuty (path/sameSite/secure) — dlatego jest to jedno źródło prawdy.
+ * NOTE: `clearCookie` only removes the cookie when given the same attributes
+ * (path/sameSite/secure), which is why this is the single source of truth.
  */
 export function buildAuthCookieOptions(nodeEnv: Env['NODE_ENV']): CookieOptions {
   return {
@@ -25,7 +25,7 @@ export function buildAuthCookieOptions(nodeEnv: Env['NODE_ENV']): CookieOptions 
   };
 }
 
-/** Opcje przy ustawianiu ciasteczka — `maxAge` zrównany z czasem życia JWT. */
+/** Options used when setting the cookie — `maxAge` matches the JWT lifetime. */
 export function buildAuthCookieSetOptions(
   nodeEnv: Env['NODE_ENV'],
   expiresIn: Env['JWT_EXPIRES_IN'],

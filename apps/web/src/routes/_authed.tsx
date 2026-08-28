@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { fetchCurrentUser, useLogoutMutation } from '@/features/auth/auth.queries';
 
 /**
- * Trasa bezścieżkowa (`_authed`) pełni rolę guarda dla całej sekcji chronionej.
- * Wszystko, co ma wymagać sesji, wystarczy umieścić jako jej dziecko.
+ * This pathless route (`_authed`) guards the entire protected section: anything
+ * that should require a session only needs to be nested underneath it.
  */
 export const Route = createFileRoute('/_authed')({
   beforeLoad: async ({ context, location }) => {
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_authed')({
       throw redirect({ to: '/login', search: { redirect: location.href } });
     }
 
-    // Trafia do kontekstu trasy — dzieci mogą czytać usera bez własnego zapytania.
+    // Goes into the route context — children read the user without their own query.
     return { user };
   },
   component: AuthedLayout,
@@ -28,8 +28,8 @@ function AuthedLayout() {
   const logout = useLogoutMutation();
 
   async function handleLogout() {
-    // `mutateAsync` rozwiązuje się dopiero po `onSettled`, więc cache jest
-    // wyczyszczony zanim wykonamy nawigację.
+    // `mutateAsync` settles only after `onSettled`, so the cache is already cleared
+    // by the time we navigate.
     await logout.mutateAsync().catch(() => undefined);
     await router.navigate({ to: '/login' });
   }

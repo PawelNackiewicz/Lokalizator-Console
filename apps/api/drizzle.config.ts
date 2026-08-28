@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { defineConfig } from 'drizzle-kit';
 
-// drizzle-kit uruchamiany jest z katalogu apps/api, a .env leży w rootcie repo.
+// drizzle-kit runs from apps/api, but .env lives at the repo root.
 config({ path: ['../../.env', '.env'], quiet: true });
 
 const databaseUrl = process.env.DATABASE_URL;

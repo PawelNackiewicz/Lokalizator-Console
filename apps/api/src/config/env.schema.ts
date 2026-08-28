@@ -1,21 +1,21 @@
 import { z } from 'zod';
 
-/** Format akceptowany przez `@nestjs/jwt` (expiresIn) — np. `8h`, `30m`, `7d`. */
+/** Format accepted by `@nestjs/jwt` (expiresIn) — e.g. `8h`, `30m`, `7d`. */
 const durationSchema = z
   .string()
   .regex(/^\d+[smhd]$/, 'Oczekiwano czasu w formacie <liczba><s|m|h|d>, np. "8h"');
 
 /**
- * Jedyne źródło prawdy o zmiennych środowiskowych backendu.
- * Aplikacja nie wstaje, jeśli którakolwiek jest niepoprawna — błąd konfiguracji
- * ma się ujawnić przy starcie, a nie przy pierwszym requeście.
+ * Single source of truth for the backend's environment variables. The app refuses
+ * to boot if any of them is invalid — a config error should surface at startup,
+ * not on the first request.
  */
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 
   API_PORT: z.coerce.number().int().positive().max(65535).default(3000),
 
-  /** Dokładny origin frontendu — CORS z credentials nie akceptuje wildcardu. */
+  /** Exact web app origin — CORS with credentials rejects wildcards. */
   WEB_ORIGIN: z.url().default('http://localhost:5173'),
 
   DATABASE_URL: z.url(
@@ -31,8 +31,8 @@ export const envSchema = z.object({
 export type Env = z.infer<typeof envSchema>;
 
 /**
- * Walidator podpinany do `ConfigModule.forRoot({ validate })`.
- * Rzuca czytelnym błędem z listą wszystkich brakujących/niepoprawnych zmiennych.
+ * Validator wired into `ConfigModule.forRoot({ validate })`. Throws a readable
+ * error listing every missing or invalid variable at once.
  */
 export function validateEnv(raw: Record<string, unknown>): Env {
   const result = envSchema.safeParse(raw);

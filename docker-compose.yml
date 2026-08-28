@@ -1,5 +1,5 @@
-# Na tym etapie konteneryzujemy WYŁĄCZNIE bazę danych.
-# Backend (apps/api) i frontend (apps/web) uruchamiamy lokalnie przez `pnpm dev`.
+# At this stage ONLY the database is containerised.
+# The backend (apps/api) and web app (apps/web) run locally through `pnpm dev`.
 services:
   postgres:
     image: postgres:17-alpine
@@ -10,12 +10,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lokalizator}
       POSTGRES_DB: ${POSTGRES_DB:-lokalizator}
     ports:
-      # Host:kontener — port hosta konfigurowalny, żeby nie kolidować z lokalnym Postgresem.
+      # host:container — the host port is configurable so it does not clash with a local Postgres.
       - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      # Pozwala poczekać na gotowość bazy: `docker compose up -d --wait`
+      # Lets you wait for the database to be ready: `docker compose up -d --wait`
       test:
         ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-lokalizator} -d ${POSTGRES_DB:-lokalizator}']
       interval: 5s

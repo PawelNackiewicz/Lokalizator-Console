@@ -25,5 +25,5 @@ build/
 npm-debug.log*
 pnpm-debug.log*
 
-# docker volume (gdyby ktoś zmienił driver na bind mount)
+# docker volume (in case someone switches the driver to a bind mount)
 .docker-data/

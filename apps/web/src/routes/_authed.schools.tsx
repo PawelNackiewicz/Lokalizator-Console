@@ -11,8 +11,8 @@ import { SchoolsMap } from '@/features/schools/schools-map';
 import { schoolsQueryOptions } from '@/features/schools/schools.queries';
 
 export const Route = createFileRoute('/_authed/schools')({
-  // Prefetch (a nie `ensureQueryData`), żeby ewentualny błąd obsłużył komponent
-  // widocznym alertem zamiast wywalać całą trasę do errorComponent.
+  // Prefetch rather than `ensureQueryData`, so a failure is handled by the component
+  // with a visible alert instead of dropping the whole route into errorComponent.
   loader: ({ context }) => {
     void context.queryClient.prefetchQuery(schoolsQueryOptions);
   },

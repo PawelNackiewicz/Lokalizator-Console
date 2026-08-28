@@ -3,7 +3,7 @@ import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router
 
 import { Button } from '@/components/ui/button';
 
-/** Kontekst dostępny w `beforeLoad`/`loader` każdej trasy. */
+/** Context available in every route's `beforeLoad`/`loader`. */
 export interface RouterContext {
   queryClient: QueryClient;
 }

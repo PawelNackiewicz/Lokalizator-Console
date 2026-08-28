@@ -15,14 +15,14 @@ import { ApiError } from '@/lib/api-client';
 const DEFAULT_REDIRECT = '/schools';
 
 const searchSchema = z.object({
-  /** Dokąd wrócić po zalogowaniu — ustawiane przez guard trasy `_authed`. */
+  /** Where to return after signing in — set by the `_authed` route guard. */
   redirect: z.string().optional(),
 });
 
 export const Route = createFileRoute('/login')({
   validateSearch: searchSchema,
   beforeLoad: async ({ context }) => {
-    // Zalogowany użytkownik nie ma po co oglądać formularza.
+    // A signed-in user has no reason to see the form.
     if (await fetchCurrentUser(context.queryClient)) {
       throw redirect({ to: DEFAULT_REDIRECT });
     }
@@ -44,7 +44,7 @@ function LoginPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    // Ten sam schemat waliduje request po stronie API — komunikaty się nie rozjadą.
+    // The same schema validates the request on the API side, so messages stay in sync.
     const parsed = loginInputSchema.safeParse({ username, password });
 
     if (!parsed.success) {
@@ -57,14 +57,14 @@ function LoginPage() {
     try {
       await login.mutateAsync(parsed.data);
     } catch {
-      // Treść błędu jest już w `login.error` i renderujemy ją w alercie.
+      // The message already lives in `login.error` and is rendered in the alert.
       return;
     }
 
-    // Przelicza guardy tras z nowym stanem sesji, dopiero potem nawigujemy.
+    // Re-runs the route guards against the new session state before navigating.
     await router.invalidate();
-    // `history.push` przyjmuje surowy href, więc obsłuży dowolną ścieżkę
-    // powrotną zapisaną w ?redirect= bez walki z typami `to`.
+    // `history.push` takes a raw href, so it handles any return path stored in
+    // ?redirect= without fighting the `to` types.
     router.history.push(redirectTo ?? DEFAULT_REDIRECT);
   }
 

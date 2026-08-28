@@ -5,9 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from './env.schema';
 
 /**
- * Całe monorepo korzysta z jednego pliku `.env` w rootcie repo — ten sam,
- * który czyta docker-compose. Dzięki temu DATABASE_URL i POSTGRES_* nie mogą
- * się rozjechać między bazą a aplikacją.
+ * The whole monorepo uses a single `.env` at the repo root — the same one
+ * docker-compose reads, so DATABASE_URL and POSTGRES_* cannot drift apart
+ * between the database and the app.
  */
 export const EnvModule = ConfigModule.forRoot({
   isGlobal: true,
