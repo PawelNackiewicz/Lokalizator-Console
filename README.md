@@ -232,6 +232,11 @@ znanymi brakami, a nie przeoczeniami:
 - **`rating` jest mockowany** — brak źródła realnych ocen.
 - **`address` to jedno pole tekstowe.** Wystarcza do wyświetlenia; sortowanie/filtrowanie
   po mieście wymagałoby rozbicia na `street` / `postalCode` / `city`.
+- **Import CSV kończy się na podglądzie, bez zapisu.** `/schools/import/csv` parsuje i
+  waliduje plik RSPO w całości, ale przycisk "Zapisz" jest celowo wyłączony — tabela
+  `schools` wymaga `latitude`/`longitude`/`rating` (NOT NULL + CHECK), których plik RSPO
+  nie zawiera. Docelowa ścieżka: nowy endpoint `POST /schools/import` + geokodowanie
+  adresów dla uzupełnienia `latitude`/`longitude`.
 
 **Infrastruktura**
 
