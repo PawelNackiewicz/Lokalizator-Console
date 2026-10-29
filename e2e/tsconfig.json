@@ -1,0 +1,11 @@
+{
+  "extends": "@lokalizator/tsconfig/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": ["playwright.config.ts", "tests/**/*.ts"]
+}

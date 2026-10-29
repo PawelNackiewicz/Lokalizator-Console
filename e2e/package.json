@@ -1,0 +1,21 @@
+{
+  "name": "@lokalizator/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@lokalizator/eslint-config": "workspace:*",
+    "@lokalizator/tsconfig": "workspace:*",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^22.18.12",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3"
+  }
+}

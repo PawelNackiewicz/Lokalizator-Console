@@ -27,3 +27,7 @@ pnpm-debug.log*
 
 # docker volume (in case someone switches the driver to a bind mount)
 .docker-data/
+
+# playwright
+e2e/playwright-report/
+e2e/test-results/
