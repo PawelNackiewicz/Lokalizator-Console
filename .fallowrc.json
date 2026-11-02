@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "workspaces": {
+    "patterns": ["apps/*", "packages/*", "e2e"]
+  },
+  "ignoreExports": [
+    { "file": "apps/web/src/components/ui/**", "exports": ["*"] },
+    { "file": "apps/web/src/features/**/*.queries.ts", "exports": ["*"] }
+  ]
+}

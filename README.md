@@ -55,6 +55,7 @@ pnpm typecheck      # tsc --noEmit w całym monorepo
 pnpm test           # testy jednostkowe (vitest)
 pnpm verify         # format + lint + typecheck + testy — to samo co CI
 pnpm test:e2e       # build api + web i testy Playwright (wymaga bazy z seedem)
+pnpm quality        # fallow audit — martwy kod, duplikacja, złożoność dodane względem main
 
 pnpm db:generate    # wygeneruj migrację po zmianie src/db/schema.ts
 pnpm db:migrate     # zastosuj migracje

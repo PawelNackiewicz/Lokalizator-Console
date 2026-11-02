@@ -15,6 +15,7 @@
     "test": "turbo run test",
     "test:e2e": "turbo run build --filter=@lokalizator/api --filter=@lokalizator/web && pnpm --filter @lokalizator/e2e e2e",
     "verify": "prettier --check . && turbo run lint typecheck test",
+    "quality": "fallow audit --base origin/main",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "docker:up": "docker compose up -d",
@@ -26,6 +27,7 @@
     "db:studio": "pnpm --filter @lokalizator/api run db:studio"
   },
   "devDependencies": {
+    "fallow": "3.38.1",
     "prettier": "^3.6.2",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"

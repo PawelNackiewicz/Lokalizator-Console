@@ -25,6 +25,27 @@ jobs:
       - run: cp .env.example .env
       - run: pnpm verify
 
+  quality:
+    name: Code quality (fallow audit)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Report-only for now: audit judges only what the PR adds. Flip to true once
+      # the findings have proven trustworthy.
+      - uses: fallow-rs/fallow@v3
+        with:
+          command: audit
+          comment: true
+          fail-on-issues: false
+
   e2e:
     name: End-to-end (Playwright)
     runs-on: ubuntu-latest
