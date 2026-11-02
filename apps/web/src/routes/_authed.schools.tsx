@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { filterSchoolsByName } from '@/features/schools/filter-schools';
 import { SchoolList, SchoolListSkeleton } from '@/features/schools/school-list';
+import { DEFAULT_SCHOOL_SORT, sortSchools, type SchoolSort } from '@/features/schools/school-sort';
+import { SchoolSortSelect } from '@/features/schools/school-sort-select';
 import { SchoolsMap } from '@/features/schools/schools-map';
 import { schoolsQueryOptions } from '@/features/schools/schools.queries';
 
@@ -26,7 +28,11 @@ function SchoolsPage() {
   const { data: schools, isPending, isError, error } = useQuery(schoolsQueryOptions);
   const [selected, setSelected] = useState<School | null>(null);
   const [query, setQuery] = useState('');
-  const visibleSchools = useMemo(() => filterSchoolsByName(schools ?? [], query), [schools, query]);
+  const [sort, setSort] = useState<SchoolSort>(DEFAULT_SCHOOL_SORT);
+  const visibleSchools = useMemo(
+    () => sortSchools(filterSchoolsByName(schools ?? [], query), sort),
+    [schools, query, sort],
+  );
 
   function handleQueryChange(value: string) {
     setQuery(value);
@@ -53,6 +59,11 @@ function SchoolsPage() {
           <CardDescription>
             {isPending ? 'Wczytywanie…' : `${visibleSchools.length} placówek na mapie Polski`}
           </CardDescription>
+          <SchoolSortSelect
+            value={sort}
+            onChange={setSort}
+            disabled={isPending || schools.length === 0}
+          />
         </CardHeader>
 
         <div className="border-b px-6 py-3">
