@@ -10,10 +10,6 @@ on:
   issue_comment:
     types: [created]
 
-concurrency:
-  group: agent-refine-${{ github.event.issue.number }}
-  cancel-in-progress: true
-
 jobs:
   refine:
     if: >-
@@ -23,6 +19,11 @@ jobs:
       (github.event_name == 'issues' || contains(github.event.comment.body, '@claude'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Job-level, so it applies only after `if`: the agent's own closing comment starts a
+    # run that is skipped and must not cancel the one still finishing.
+    concurrency:
+      group: agent-refine-${{ github.event.issue.number }}
+      cancel-in-progress: true
     permissions:
       contents: read
       issues: write
@@ -65,5 +66,6 @@ jobs:
             Never add or remove the `ready` label. Never change code. Never write the literal
             text "@" followed by "claude" in any comment.
           claude_args: |
+            --model ${{ vars.AGENT_MODEL_REFINE || 'claude-sonnet-5-5' }}
             --max-turns 40
             --allowedTools "Read,Glob,Grep,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*)"

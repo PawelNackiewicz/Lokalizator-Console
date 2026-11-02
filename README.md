@@ -81,6 +81,10 @@ pnpm docker:reset               # stop + usunięcie wolumenu (kasuje dane!)
 Wymaga sekretu repozytorium `CLAUDE_CODE_OAUTH_TOKEN` (`claude setup-token`)
 albo `ANTHROPIC_API_KEY`.
 
+Model każdego agenta ustawiasz zmiennymi repozytorium (Settings → Secrets and variables
+→ Actions → Variables): `AGENT_MODEL_REFINE` i `AGENT_MODEL_IMPLEMENT`, np.
+`claude-opus-5-5`. Bez nich oba agenty używają `claude-sonnet-5-5`.
+
 ---
 
 ## Architektura i podjęte decyzje
