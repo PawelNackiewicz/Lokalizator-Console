@@ -1,0 +1,37 @@
+name: Zadanie dla agenta
+description: Ticket, który można oddać agentowi etykietą `ready`
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Agent dostaje tylko treść tego issue i `CLAUDE.md`. Im węższy zakres i bardziej
+        sprawdzalne kryteria, tym większa szansa na PR bez poprawek. Gdy ticket jest gotowy,
+        dodaj etykietę **`ready`**.
+  - type: textarea
+    id: goal
+    attributes:
+      label: Cel
+      description: Co ma się zmienić i dlaczego. Jedno, dwa zdania.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Kryteria akceptacji
+      description: Sprawdzalne warunki. Najlepiej takie, które da się zamienić w test.
+      placeholder: |
+        - [ ] ...
+        - [ ] Nowe zachowanie ma test e2e w `e2e/tests/`
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Zakres
+      description: Pliki lub katalogi, których zmiana jest dozwolona.
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Poza zakresem
+      description: Czego agent ma NIE robić.

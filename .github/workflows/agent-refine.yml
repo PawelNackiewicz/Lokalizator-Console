@@ -1,0 +1,69 @@
+name: Agent — refine issue
+
+# A new issue (or a human reply mentioning @claude) is turned into an implementable
+# ticket: Claude reads the code, rewrites the issue body and labels it `refined`, or
+# asks questions and labels it `needs-info`. Only a human adds `ready`.
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: agent-refine-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  refine:
+    if: >-
+      !github.event.issue.pull_request &&
+      !contains(github.event.issue.labels.*.name, 'ready') &&
+      !contains(github.event.issue.labels.*.name, 'pr-open') &&
+      (github.event_name == 'issues' || contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          # Set ONE of these repository secrets; the other stays empty.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are the refinement agent of this repository's software factory.
+            Repository: ${{ github.repository }}. Issue: #${{ github.event.issue.number }}.
+
+            1. Read the issue and all its comments: `gh issue view ${{ github.event.issue.number }} --comments`.
+               If a human answered earlier questions, use the answers.
+            2. Read CLAUDE.md and explore the code (read-only) to find exactly which files the
+               change touches and how the existing code does similar things.
+            3. Decide:
+               - Essential information is missing (behaviour, edge case, UX choice only a human
+                 can make): post your questions as ONE comment, add label `needs-info`, remove
+                 `refined`. Stop.
+               - Too big for one reviewable PR (roughly more than ~400 changed lines or more than
+                 one feature): comment with a proposed split into separate issues, add `needs-info`.
+                 Stop.
+               - Otherwise rewrite the issue body with `gh issue edit --body-file` using exactly
+                 these sections, written in Polish:
+                 ### Cel
+                 ### Kryteria akceptacji   (testable checkboxes; user-visible behaviour needs an e2e test)
+                 ### Zakres                (files/directories that may change)
+                 ### Poza zakresem
+                 ### Ryzyko                (low / medium / high, judged against "High-risk areas" in CLAUDE.md, with one-line reason)
+                 ### Oryginalne zgłoszenie (the original text, quoted verbatim; keep it if already present)
+                 Then add label `refined`, remove `needs-info`, and post a two-line comment asking the
+                 human to review the ticket and add the `ready` label.
+            Never add or remove the `ready` label. Never change code. Never write the literal
+            text "@" followed by "claude" in any comment.
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,Write,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*)"
