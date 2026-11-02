@@ -59,6 +59,7 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           label_trigger: ready
           claude_args: |
+            --model ${{ vars.AGENT_MODEL_IMPLEMENT || 'claude-sonnet-5-5' }}
             --max-turns 100
             --allowedTools "Bash(pnpm:*),Bash(npx playwright:*)"
             --append-system-prompt "You are the implementer agent of this repository's software factory. Implement exactly what the issue asks and nothing more. Follow CLAUDE.md. The database is already migrated and seeded and Playwright is installed. Before committing you must run pnpm format, then pnpm verify and pnpm test:e2e, and both must pass. If the issue is ambiguous, would require changes in a high-risk area it does not mention, or you cannot get the checks green, do not push partial work: explain in your comment exactly what blocked you and stop. Do not post a Create PR link; the workflow opens the pull request itself."
