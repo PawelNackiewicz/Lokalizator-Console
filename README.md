@@ -68,10 +68,15 @@ pnpm docker:reset               # stop + usunięcie wolumenu (kasuje dane!)
 
 ### Agent (software factory)
 
-Issue z etykietą **`ready`** trafia do agenta (`.github/workflows/agent-implement.yml`):
-Claude implementuje zmianę na branchu `claude/issue-N-*`, uruchamia `pnpm verify`
-i `pnpm test:e2e`, a workflow otwiera PR z etykietą `agent`. Jeśli agent nie da rady,
-issue dostaje etykietę `needs-human`. Tickety zakładaj z szablonu „Zadanie dla agenta”.
+1. **Nowe issue** (wystarczy jedno zdanie) uruchamia `agent-refine.yml`: Claude czyta kod
+   i przepisuje issue na ticket (cel, kryteria akceptacji, zakres, ryzyko) z etykietą
+   `refined`, albo zadaje pytania z etykietą `needs-info`. Odpowiadasz w komentarzu
+   z `@claude`, a agent poprawia ticket.
+2. **Etykieta `ready`** (dodaje ją tylko człowiek) uruchamia `agent-implement.yml`:
+   Claude implementuje zmianę na branchu `claude/issue-N-*`, musi przejść `pnpm verify`
+   i `pnpm test:e2e`, a workflow otwiera PR z etykietą `agent`. Jeśli agent nie da rady,
+   issue dostaje `needs-human`.
+3. **Review i merge** robi człowiek.
 
 Wymaga sekretu repozytorium `CLAUDE_CODE_OAUTH_TOKEN` (`claude setup-token`)
 albo `ANTHROPIC_API_KEY`.
