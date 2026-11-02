@@ -4,7 +4,7 @@ import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router
 import { Button } from '@/components/ui/button';
 
 /** Context available in every route's `beforeLoad`/`loader`. */
-export interface RouterContext {
+interface RouterContext {
   queryClient: QueryClient;
 }
 

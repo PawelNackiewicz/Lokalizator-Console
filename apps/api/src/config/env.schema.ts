@@ -10,7 +10,7 @@ const durationSchema = z
  * to boot if any of them is invalid — a config error should surface at startup,
  * not on the first request.
  */
-export const envSchema = z.object({
+const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 
   API_PORT: z.coerce.number().int().positive().max(65535).default(3000),

@@ -17,12 +17,16 @@ pnpm dev                      # api :3000, web :5173 — login admin / admin
 
 ## Definition of done
 
-A change is finished only when both pass:
+A change is finished only when all three pass:
 
 ```bash
 pnpm verify      # prettier --check + lint + typecheck + unit tests, whole monorepo
 pnpm test:e2e    # builds api + web, runs Playwright against them (needs a seeded DB)
+pnpm quality     # fallow audit: dead code, duplication, complexity introduced vs main
 ```
+
+Fix fallow findings in the files you changed instead of silencing them. A
+`// fallow-ignore-next-line <rule> -- <reason>` comment is allowed only with a real reason.
 
 Never weaken, skip or delete a test to make it pass. If a test is wrong, say so and why.
 Run `pnpm format` before committing — `verify` fails on unformatted files.

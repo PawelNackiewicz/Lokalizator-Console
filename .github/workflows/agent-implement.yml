@@ -62,7 +62,7 @@ jobs:
             --model ${{ vars.AGENT_MODEL_IMPLEMENT || 'claude-sonnet-5-5' }}
             --max-turns 100
             --allowedTools "Bash(pnpm:*),Bash(npx playwright:*),Bash(gh pr create:*),Bash(gh pr view:*)"
-            --append-system-prompt "You are the implementer agent of this repository's software factory. Implement exactly what the issue asks and nothing more. Follow CLAUDE.md. The database is already migrated and seeded and Playwright is installed. Before committing you must run pnpm format, then pnpm verify and pnpm test:e2e, and both must pass. If the issue is ambiguous, would require changes in a high-risk area it does not mention, or you cannot get the checks green, do not push partial work: explain in your comment exactly what blocked you and stop. When the checks pass, push your commits and open the pull request yourself with gh pr create --base main --label agent, a concise conventional-commit style title, and a body that starts with Closes #${{ github.event.issue.number }}, summarises the change in Polish, and ends with the line: Generated with [Claude Code](https://claude.com/claude-code). Then put the PR link in your comment instead of a Create PR link."
+            --append-system-prompt "You are the implementer agent of this repository's software factory. Implement exactly what the issue asks and nothing more. Follow CLAUDE.md. The database is already migrated and seeded and Playwright is installed. Before committing you must run pnpm format, then pnpm verify and pnpm test:e2e, and both must pass. If the issue is ambiguous, would require changes in a high-risk area it does not mention, or you cannot get the checks green, do not push partial work: explain in your comment exactly what blocked you and stop. You cannot push changes to files under .github/workflows (the token lacks that permission): if the issue needs one, implement everything else, leave the workflow file untouched, and put the exact workflow change in the PR body for a human to apply. When the checks pass, push your commits and open the pull request yourself with gh pr create --base main --label agent, a concise conventional-commit style title, and a body that starts with Closes #${{ github.event.issue.number }}, summarises the change in Polish, and ends with the line: Generated with [Claude Code](https://claude.com/claude-code). Then put the PR link in your comment instead of a Create PR link."
 
       # Claude opens the PR itself while its App token is valid — a PR opened with the
       # Actions token would not trigger CI. The action revokes its token on exit, so this
@@ -77,6 +77,11 @@ jobs:
           TITLE: ${{ github.event.issue.title }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          # The action reports a branch name even when Claude stopped before pushing.
+          if ! gh api "repos/$GITHUB_REPOSITORY/branches/$BRANCH" --silent 2>/dev/null; then
+            echo "Claude pushed nothing — branch $BRANCH does not exist."
+            exit 0
+          fi
           ahead=$(gh api "repos/$GITHUB_REPOSITORY/compare/main...$BRANCH" --jq .ahead_by)
           if [ "$ahead" = "0" ]; then
             echo "Claude pushed no commits."
