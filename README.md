@@ -66,6 +66,16 @@ pnpm docker:up / docker:down    # start / stop Postgresa
 pnpm docker:reset               # stop + usunięcie wolumenu (kasuje dane!)
 ```
 
+### Agent (software factory)
+
+Issue z etykietą **`ready`** trafia do agenta (`.github/workflows/agent-implement.yml`):
+Claude implementuje zmianę na branchu `claude/issue-N-*`, uruchamia `pnpm verify`
+i `pnpm test:e2e`, a workflow otwiera PR z etykietą `agent`. Jeśli agent nie da rady,
+issue dostaje etykietę `needs-human`. Tickety zakładaj z szablonu „Zadanie dla agenta”.
+
+Wymaga sekretu repozytorium `CLAUDE_CODE_OAUTH_TOKEN` (`claude setup-token`)
+albo `ANTHROPIC_API_KEY`.
+
 ---
 
 ## Architektura i podjęte decyzje
