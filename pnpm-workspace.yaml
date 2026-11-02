@@ -1,10 +1,12 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'e2e'
 
-# pnpm >=10 domyślnie blokuje skrypty postinstall zależności.
-# Poniższe pakiety wymagają ich do zbudowania/rozpakowania natywnych binariów.
+# pnpm >=10 blocks dependency install scripts by default; these need them for native binaries.
+# @scarf/scarf is install-time telemetry pulled in by swagger-ui — nothing needs it to run.
 allowBuilds:
+  '@scarf/scarf': false
   '@tailwindcss/oxide': true
   esbuild: true
   unrs-resolver: true

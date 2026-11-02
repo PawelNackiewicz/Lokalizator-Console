@@ -52,7 +52,9 @@ pnpm dev            # turbo run dev — api + web + watch na shared-types
 pnpm build          # build produkcyjny wszystkich pakietów
 pnpm lint           # ESLint w całym monorepo
 pnpm typecheck      # tsc --noEmit w całym monorepo
-pnpm --filter @lokalizator/api test   # testy jednostkowe (vitest)
+pnpm test           # testy jednostkowe (vitest)
+pnpm verify         # format + lint + typecheck + testy — to samo co CI
+pnpm test:e2e       # build api + web i testy Playwright (wymaga bazy z seedem)
 
 pnpm db:generate    # wygeneruj migrację po zmianie src/db/schema.ts
 pnpm db:migrate     # zastosuj migracje
@@ -235,9 +237,11 @@ znanymi brakami, a nie przeoczeniami:
 
 - **Konteneryzowana jest wyłącznie baza.** Dockerfile'e dla api i web nie powstały.
 - **Migracje uruchamiane ręcznie** (`pnpm db:migrate`), bez automatycznego kroku przy starcie.
-- **Brak testów e2e.** Są tylko podstawowe testy jednostkowe API (vitest):
-  `ZodValidationPipe`, mapper szkoły, parser czasu życia tokena. Brak testów frontendu.
-- **Brak CI** i konfiguracji zdalnego cache Turborepo.
+- **Testy e2e pokrywają tylko ścieżki krytyczne** (`e2e/`, Playwright): logowanie,
+  wylogowanie, lista i mapa szkół oraz test, który na podstawie dokumentu OpenAPI sprawdza,
+  że każdy niepubliczny endpoint zwraca 401 bez sesji. Brak testów jednostkowych frontendu.
+- **CI (GitHub Actions) bez zdalnego cache Turborepo.** Dwa joby: `verify` oraz `e2e`
+  z Postgresem jako service.
 - **Devtoole TanStacka nie są podpięte.** Rollup emitował je do `dist` jako martwe chunki
   mimo bramkowania `import.meta.env.DEV`, więc zostały usunięte, żeby build produkcyjny
   był czysty. Aby je dodać lokalnie:
